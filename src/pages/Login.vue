@@ -41,6 +41,8 @@
 
 <script>
 import { useQuasar } from 'quasar'
+import { mapActions } from 'vuex'
+
 let $q
 
 export default {
@@ -48,13 +50,14 @@ export default {
   data () {
     return {
       login: {
-        username: '',
-        password: ''
+        username: 'Joabson',
+        password: 'a2d4g6j8'
       }
     }
   },
   methods: {
-    submitForm () {
+    ...mapActions('auth', ['doLogin']),
+    async submitForm () {
       if (!this.login.username || !this.login.password) {
         $q.notify({
           type: 'negative',
@@ -66,7 +69,18 @@ export default {
           message: 'A senha deve ter 6 ou mais caracteres.'
         })
       } else {
-        console.log('login')
+        try {
+          await this.doLogin(this.login)
+          const toPath = this.$route.query.to || '/admin'
+          this.$router.push(toPath)
+        } catch (err) {
+          if (err.response.data.detail) {
+            $q.notify({
+              type: 'negative',
+              message: err.response.data.detail
+            })
+          }
+        }
       }
     }
   },

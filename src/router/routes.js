@@ -4,10 +4,12 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', component: () => import('pages/Index.vue') },
+      { path: '/admin', component: () => import('pages/admin/Index'), meta: { requireLogin: true } }
     ]
   },
   {
+    name: 'LoginIn',
     path: '/login',
     component: () => import('pages/Login.vue')
   },

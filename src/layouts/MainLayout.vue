@@ -15,7 +15,8 @@
           Quasar App
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn stretch flat to="/login" v-if="!isAuthenticated">Login</q-btn>
+        <q-btn stretch flat @click="logout" v-else>Logout</q-btn>
       </q-toolbar>
     </q-header>
 
@@ -40,7 +41,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
@@ -93,7 +94,8 @@ const linksList = [
   }
 ]
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -102,16 +104,23 @@ export default defineComponent({
     EssentialLink
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
-
+  data () {
     return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      leftDrawerOpen: false,
+      essentialLinks: linksList
     }
+  },
+  methods: {
+    toggleLeftDrawer () {
+      this.leftDrawerOpen.value = !this.leftDrawerOpen.value
+    },
+    logout () {
+      this.$store.dispatch('auth/signOut')
+      this.$router.push('/')
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['isAuthenticated'])
   }
 })
 </script>
